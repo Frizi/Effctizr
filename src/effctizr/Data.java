@@ -7,10 +7,16 @@ package effctizr;
 public abstract class Data
 {
     protected Node owner;
-    protected static DataType type;
+    
+    public abstract DataType getType();
+    
+    public Data(Node owner)
+    {
+        this.owner = owner;
+    }
     
     public boolean isTypeOf(DataType checkType)
     {
-        return type == checkType;
+        return this.getType() == checkType;
     }
 }

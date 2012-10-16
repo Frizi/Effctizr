@@ -8,6 +8,15 @@ public class DataInput
 {
     protected DataType requiredType;
     protected Data referencedData;
+    protected String label;
+
+    public DataInput(DataType required, String label)
+    {
+        this.requiredType = required;
+        this.label = label;
+    }
+    
+    public String getLabel() { return label; }
     
     public Data getData()
     {
@@ -19,14 +28,14 @@ public class DataInput
         this.referencedData = set;
     }
     
-    public DataInput(DataType required)
+    public boolean matchesType(Data d)
     {
-        this.requiredType = required;
+        return d.isTypeOf(requiredType);
     }
     
     public boolean LinkData(Data d)
     {
-        if(d.isTypeOf(requiredType))
+        if(matchesType(d))
         {
             this.referencedData = d;
             return true;

@@ -19,20 +19,63 @@ public abstract class Node implements NodeObserver {
     
     // input & outputs
     protected ArrayList<DataInput> inputs;
-    protected ArrayList<Data> outputs;
+    protected ArrayList<Data> defaults;
+    protected ArrayList<DataOutput> outputs;
     
     public Node()
     {
+        this.ready = false;
         observers = new HashSet<>();
+        inputs = new ArrayList<>();
+        outputs = new ArrayList<>();
+        defaults = new ArrayList<>();
+    }
+    public abstract String getHeader();
+
+    /**
+
+     * The function that needs to initialize
+     * inputs, outputs and defaults.
+     */
+    protected abstract void initializeInterface();
+    
+    public void assertInterfaceConsistency()
+    {
+        assert inputs.size() == defaults.size();
+        for(int i = 0; i < inputs.size(); i++)
+        {
+            assert inputs.get(i).matchesType(defaults.get(i));
+        }
     }
     
-    public boolean trySetInput(DataInput input, Data output)
+    protected abstract void update();
+    protected Data getInput(int inputId)
     {
-        assert input.isOwner(this) : "cannot set input for other node";
-        
-        Data oldData = input.getData();
-        if(input.LinkData(output))
+        assert inputId < inputs.size() : "trying to get inexistent input " + inputId;
+        Data input = inputs.get(inputId).getData();
+        if(input == null)
         {
+            return defaults.get(inputId);
+        }
+        return input;
+    }
+    
+    protected Data getOutput(int outputId)
+    {
+        assert outputId < inputs.size() : "trying to get inexistent output " + outputId;
+        Data output = outputs.get(outputId).getData();
+        assert output != null : "output " + outputId + " is null!";
+        return output;
+    }
+    
+    public boolean trySetInput(int inputId, Data output)
+    {
+        DataInput input = inputs.get(inputId);
+        Data oldData = input.getData();
+        if(input.matchesType(output))
+        {
+            this.onSelfInvalidate();
+            input.LinkData(output);
             if(oldData != null && oldData.owner != this)
             {
                 // check if need to unregister observer
@@ -56,6 +99,7 @@ public abstract class Node implements NodeObserver {
             {
                 output.owner.addObserver(this);
             }
+            this.checkAndUpdate();
             return true;
         }
         return false;
@@ -132,16 +176,42 @@ public abstract class Node implements NodeObserver {
         }
     }
     
+    protected void checkAndUpdate()
+    {
+        boolean allReady = true;
+        
+        // check if all data sources ready
+        for (Iterator<DataInput> it = inputs.iterator(); it.hasNext();)
+        {
+            Data data = it.next().getData();
+            if( data != null && !data.owner.ready )
+            {
+                allReady = false;
+                break;
+            }
+        }
+        
+        if (allReady)
+        {
+            // calculate data
+            update();
+        }
+    }
+    
+    public void beginDataUpdate()
+    {
+        this.onSelfInvalidate();
+    }
+    
+    public void endDataUpdate()
+    {
+        this.checkAndUpdate();
+    }
+    
     @Override
     public void onNodeReady(NodeEvent e)
     {
-        /*
-        // check if all data sources ready
-        if (all ready)
-        {
-            // calculate data
-        }
-        */
+        checkAndUpdate();
     }
 
     @Override
