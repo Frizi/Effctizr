@@ -1,5 +1,7 @@
 package effctizr;
 
+import java.awt.Color;
+
 /**
  *
  * @author frizi
@@ -19,4 +21,6 @@ public abstract class Data
     {
         return this.getType() == checkType;
     }
+    
+    public abstract Color getTypeColor();
 }

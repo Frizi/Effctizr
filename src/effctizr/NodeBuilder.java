@@ -7,6 +7,7 @@ package effctizr;
 import effctizr.nodes.NodeIntAdd;
 import effctizr.nodes.NodeIntMul;
 import effctizr.nodes.NodeIntSub;
+import effctizr.nodes.NodeVecDot;
 
 /**
  *
@@ -35,13 +36,15 @@ public class NodeBuilder
             case INT_MUL:
                 node = new NodeIntMul();
                 break;
+            case VEC_DOT:
+                node = new NodeVecDot();
+                break;
             default:  
                 assert !true : "trying to build unknown node";
                 break;
         }
         
         node.initializeInterface();
-        node.assertInterfaceConsistency();
         node.update();
         return node;
     }

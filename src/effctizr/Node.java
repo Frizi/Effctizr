@@ -28,25 +28,19 @@ public abstract class Node implements NodeObserver {
         observers = new HashSet<>();
         inputs = new ArrayList<>();
         outputs = new ArrayList<>();
-        defaults = new ArrayList<>();
     }
     public abstract String getHeader();
-
+    
+    // for gui
+    public ArrayList<DataInput> getInputList() { return inputs; }
+    public ArrayList<DataOutput> getOutputList() { return outputs; }
+    
     /**
 
      * The function that needs to initialize
      * inputs, outputs and defaults.
      */
     protected abstract void initializeInterface();
-    
-    public void assertInterfaceConsistency()
-    {
-        assert inputs.size() == defaults.size();
-        for(int i = 0; i < inputs.size(); i++)
-        {
-            assert inputs.get(i).matchesType(defaults.get(i));
-        }
-    }
     
     protected abstract void update();
     protected Data getInput(int inputId)
@@ -55,7 +49,7 @@ public abstract class Node implements NodeObserver {
         Data input = inputs.get(inputId).getData();
         if(input == null)
         {
-            return defaults.get(inputId);
+            return inputs.get(inputId).getDefault();
         }
         return input;
     }

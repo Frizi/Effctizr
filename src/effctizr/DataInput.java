@@ -8,12 +8,15 @@ public class DataInput
 {
     protected DataType requiredType;
     protected Data referencedData;
+    protected Data defaultData;
     protected String label;
 
-    public DataInput(DataType required, String label)
+    public DataInput(DataType required, String label, Data defaultData)
     {
         this.requiredType = required;
         this.label = label;
+        assert defaultData.isTypeOf(required) : "wrong default data type";
+        this.defaultData = defaultData;
     }
     
     public String getLabel() { return label; }
@@ -21,6 +24,11 @@ public class DataInput
     public Data getData()
     {
         return referencedData;
+    }
+    
+    public Data getDefault()
+    {
+        return defaultData;
     }
     
     public void setData(Data set)

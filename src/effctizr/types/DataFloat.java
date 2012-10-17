@@ -13,33 +13,35 @@ import java.awt.Color;
  *
  * @author frizi
  */
-public class DataInteger extends Data
+public class DataFloat extends Data
 {
-    protected int value;
+    protected float value;
     
-    public DataInteger(Node owner)
+    public DataFloat(Node owner)
     {
         super(owner);
-        this.value = 0;
-    }
-    
+        this.value = 0.0f;
+    }    
+
     @Override
     public DataType getType()
     {
-        return DataType.INTEGER;
+        return DataType.FLOAT;
     }
-    
-    public DataInteger setValue(int val)
-    {
-        value = val;
-        return this;
-    }
-    
-    public int getValue() { return value; }
 
     @Override
     public Color getTypeColor()
     {
-        return Color.BLUE;
+        return Color.CYAN;
+    }
+
+    public void setValue(float value)
+    {
+        this.value = value;
+    }
+
+    public float getValue()
+    {
+        return value;
     }
 }

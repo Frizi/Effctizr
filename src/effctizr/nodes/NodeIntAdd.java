@@ -25,22 +25,11 @@ public class NodeIntAdd extends Node
 
     @Override
     protected void initializeInterface()
-    {
-        /*
-         * in:
-         ** 0: int A = 1
-         ** 1: int B = 1
-         * out:
-         ** 0: int A+B;
-         */
-        
-        this.inputs.add(new DataInput(DataType.INTEGER, "a"));
-        this.inputs.add(new DataInput(DataType.INTEGER, "b"));
-                
-        this.defaults.add(new DataInteger(this).setValue(1));
-        this.defaults.add(new DataInteger(this).setValue(1));
-        
-        this.outputs.add(new DataOutput(new DataInteger(this), "a+b"));
+    {        
+        this.inputs.add(new DataInput(DataType.INTEGER, "a", new DataInteger(this).setValue(1) ));
+        this.inputs.add(new DataInput(DataType.INTEGER, "b", new DataInteger(this).setValue(1) ));
+
+        this.outputs.add(new DataOutput(new DataInteger(this), "a + b"));
     }
 
     @Override
