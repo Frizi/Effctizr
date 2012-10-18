@@ -1,14 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package effctizr.types;
 
 import effctizr.Data;
 import effctizr.DataType;
 import effctizr.Node;
 import java.awt.Color;
-import java.util.Vector;
 
 /**
  *
