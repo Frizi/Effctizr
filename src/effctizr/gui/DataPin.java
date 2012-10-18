@@ -17,5 +17,6 @@ public abstract class DataPin extends JPanel
     {
         this.setSize(16, 16);
     }
-    
+    public abstract void focus();
+    public abstract void blur();
 }

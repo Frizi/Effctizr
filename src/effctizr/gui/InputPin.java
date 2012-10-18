@@ -12,7 +12,7 @@ import javax.swing.border.MatteBorder;
  *
  * @author frizi
  */
-public class InputPin extends DataPin
+public final class InputPin extends DataPin
 {
     DataInput input;
     public InputPin(DataInput input)
@@ -20,6 +20,18 @@ public class InputPin extends DataPin
         super();
         this.setBackground(input.getDefault().getTypeColor());
         this.input = input;
+        this.blur();
+    }
+
+    @Override
+    public void focus()
+    {
+        this.setBorder(new MatteBorder(1, 0, 1, 1, Color.ORANGE));
+    }
+
+    @Override
+    public void blur()
+    {
         this.setBorder(new MatteBorder(1, 0, 1, 1, Color.LIGHT_GRAY));
     }
 }

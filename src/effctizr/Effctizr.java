@@ -1,16 +1,14 @@
 package effctizr;
 
 import effctizr.gui.NodePanel;
+import effctizr.gui.NodesDesktop;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
-import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.MouseInputAdapter;
 
@@ -27,6 +25,8 @@ public class Effctizr {
     
     private static class TopmostMouseListener extends MouseInputAdapter
     {
+        protected static NodePanel selection;
+        
         protected JLayeredPane parent;
         public TopmostMouseListener(JLayeredPane parent)
         {
@@ -38,6 +38,13 @@ public class Effctizr {
         {
             super.mousePressed(e);
             this.parent.moveToFront(e.getComponent());
+            
+            if(selection != null)
+            {
+                selection.blur();
+            }
+            selection = (NodePanel)e.getComponent();
+            selection.focus();
         }
         
     }
@@ -56,7 +63,7 @@ public class Effctizr {
         {
             JFrame f = new JFrame("Effctizr");
             
-            JDesktopPane desk = new JDesktopPane();
+            NodesDesktop desk = new NodesDesktop();
             f.add(desk);
             desk.setSize(640, 480);
             desk.setBackground(Color.GRAY);
@@ -64,11 +71,7 @@ public class Effctizr {
             
             for (Node node : nodes)
             {
-                NodePanel testPanel = new NodePanel(node);                
-                desk.add(testPanel);
-                
-                testPanel.addMouseListener(new TopmostMouseListener(desk));
-                
+                desk.addNode(node);                
             }
             
             f.setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );

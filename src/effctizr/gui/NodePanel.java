@@ -19,21 +19,27 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.LineBorder;
 
 /**
  *
  * @author frizi
  */
-public class NodePanel extends JPanel implements MouseMotionListener, MouseListener, NodeObserver
+public class NodePanel extends JPanel implements NodeObserver
 {
     protected Node linkedNode;
     protected Point dragPos;
+    protected Set<DataPin> pins;
     public NodePanel(Node node)
     {
         super(new GridBagLayout());
+        this.pins = new HashSet<>();
+        
         linkedNode = node;
         JLabel header = new JLabel(node.getHeader());
         header.setForeground(Color.LIGHT_GRAY);
@@ -82,6 +88,7 @@ public class NodePanel extends JPanel implements MouseMotionListener, MouseListe
             // TODO: active
             DataPin active = new InputPin(dataInput);
             this.add(active, activeConst);
+            this.pins.add(active);
         }
         
         i = 0;
@@ -105,7 +112,7 @@ public class NodePanel extends JPanel implements MouseMotionListener, MouseListe
             // TODO: active
             DataPin active = new OutputPin(dataOutput);
             this.add(active, activeConst);
-            
+            this.pins.add(active);
         }
         
         Dimension size = this.getPreferredSize();
@@ -114,41 +121,26 @@ public class NodePanel extends JPanel implements MouseMotionListener, MouseListe
         this.setSize(size);
         this.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
         
-        this.addMouseListener(this);
-        this.addMouseMotionListener(this);
+    }
+    
+    public void focus()
+    {
+        this.setBorder(BorderFactory.createLineBorder(Color.ORANGE));
+        for (DataPin dataPin : pins)
+        {
+            dataPin.focus();
+        }
+    }
+    
+    public void blur()
+    {
+        this.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+        for (DataPin dataPin : pins)
+        {
+            dataPin.blur();
+        }
     }
 
-    @Override
-    public void mouseDragged(MouseEvent e)
-    {
-        Point currentLoc = this.getLocation();
-        Point deltaLoc = new Point(
-                e.getX() - dragPos.x,
-                e.getY() - dragPos.y);
-        
-        this.setLocation(currentLoc.x + deltaLoc.x, currentLoc.y + deltaLoc.y);
-        
-    }
-    
-    private static int topmost = 0;
-    
-    @Override
-    public void mousePressed(MouseEvent e)
-    {
-        dragPos = e.getPoint();
-    }
-    
-    @Override
-    public void mouseMoved(MouseEvent e) {}    
-    @Override
-    public void mouseClicked(MouseEvent e) {}
-    @Override
-    public void mouseReleased(MouseEvent e) {}
-    @Override
-    public void mouseEntered(MouseEvent e) {}
-    @Override
-    public void mouseExited(MouseEvent e) {}
-    
     @Override
     public void onNodeReady(NodeEvent e)
     {
